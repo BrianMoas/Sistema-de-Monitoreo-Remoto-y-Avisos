@@ -1,0 +1,29 @@
+{
+ "name" : "ProyectoAP",
+ "short_name" : "ProyectoAP",
+ "description" : "ProyectoAP",
+ "start_url" : "http://localhost:8080/index.html",
+ "lang" : "Espanish",
+ "display" : "standalone",
+ "orientation" : "portrait",
+ "theme_color": "aliceblue",
+ "background_color": "blue",
+ "icons": [ {
+  "src": "img/login.png",
+  "sizes" : "980x627",
+  "type" : "image/png",
+  "purpose": "maskable"
+ },
+ {
+ "src": "img/loginR.png",
+ "sizes": "144x144",
+  "type" : "image/png",
+  "purpose": "maskable"
+ },
+  {
+   "src": "img/loginI.ico",
+   "sizes": "256x164",
+   "type" : "image/any",
+   "purpose": "maskable"
+  }]
+ }

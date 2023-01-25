@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <!--PWA-->
+    <meta name="viewport" content="width-device-width, user-scalable-no, initial-scale=1.0, minimun-scale=1.0">
+    <link rel='manifest' href='/manifest.json'>
+
+    <title>Bienvenido</title>
+
+    <!--    ONE SIGNAL    -->
+    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+    <script>
+      window.OneSignal = window.OneSignal || [];
+      OneSignal.push(function() {
+        OneSignal.init({
+          appId: "aa42e551-37d7-4769-bad0-12997ea1f2df",
+        });
+      });
+
+    </script>
+
+    <!-- BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <!-- MI CSS -->
+    <link rel="stylesheet" href="css/index.css">
+
+    <!-- CHART.JS   -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
+
+
+    <!--  MIS SCRIPTS  -->
+    <script src="js/notificaciones.js" ></script>
+    <script src="js/graficas.js"></script>
+    <script src="js/util.js" ></script>
+
+    <!--  EXPORT TO EXCEL  -->
+    <script src="js/jquery.tableToExcel.js" ></script>
+
+    <!--  SWEET ALERT  -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+<!--<body onload="estaLogueado(); actualizarUtil(); graficarHoy();">-->
+<body onload="estaLogueado(); verRegistros(); graficarHoy(); getNotificaciones();">
+
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="margin: 0 auto;">
+                    <li class="nav-item">
+                        <a href="#div-grafica" class="nav-link" aria-current="page">Gráficas
+                            <img width="17px" height="17px" src="img/grafica.ico">
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a onclick="$('#tablaDatos1').tblToExcel();" href="#" class="nav-link" aria-current="page">Exportar
+                            <img width="17px" height="17px" src="img/excel.ico">
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" onclick="configuracionBateria();" class="nav-link" aria-current="page">Configuracion
+                            <img width="17px" height="17px" src="img/config.ico">
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" style="display:none;" onclick="cargarDatosDePrueba()" class="nav-link" aria-current="page">Cargar Datos
+                            <img width="17px" height="17px" src="img/upArrow.ico">
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="login.html" onclick="cerrarSesion()" class="nav-link" aria-current="page">Cerrar sesión
+                            <img width="17px" height="17px" src="img/logout.ico">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!--  TABLA NOTIFICACIONES  -->
+    <div id="notificaciones" class="container" style="box-shadow: 0 -5px 10px black,0 5px 10px black;
+                                                            background-color: rgb(255,0,0); border-radius: 3%;
+                                                            display: none; flex-direction: column;
+                                                            overflow: auto;
+                                                            margin: 3% auto 1% auto">
+        <div>
+            <h1 style="margin-top: 1%;">Notificaciones</h1>
+        </div>
+        <div>
+            <table id="tablaNotificaciones" class="table" >
+                <thead>
+                <tr>
+                    <th>Titulo</th>
+                    <th>Detalles</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                </tr>
+                </thead>
+                <tbody id="bodyTablaNotificaciones">
+                </tbody>
+            </table>
+        </div>
+        <div style="display: flex; position:relative; margin: 2% auto;">
+            <button type="button" class="btn btn-dark" onclick="eliminarNotificaciones();">Limpiar</button>
+        </div>
+    </div>
+    <br><br>
+
+    <!--  TABLA DE DATOS  -->
+
+    <div id="div-inicio" class="container" style="box-shadow: 0 -5px 10px black,0 5px 10px black;
+                                                height: 470px; overflow: auto; width: 90%; margin: 2% auto;">
+        <div>
+            <h1 style="margin: 0 auto;">Registros</h1>
+        </div>
+        <table id="tablaDatos" class="table" >
+            <thead>
+            <tr>
+                <th>Alambrado</th>
+                <th>Vol. Batería (V)</th>
+                <th>Corr. Batería (A)</th>
+                <th>Vol. Panel solar (V)</th>
+                <th>Corr. Panel Solar (A)</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+            </tr>
+            </thead>
+            <tbody id="bodyTabla">
+            </tbody>
+        </table>
+        <table style="display: none;" id="tablaDatos1" class="table" >
+            <thead>
+            <tr>
+                <th>Alambrado</th>
+                <th>Vol. Batería (V)</th>
+                <th>Corr. Batería (A)</th>
+                <th>Vol. Panel solar (V)</th>
+                <th>Corr. Panel Solar (A)</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+            </tr>
+            </thead>
+            <tbody id="bodyTabla1">
+            </tbody>
+        </table>
+    </div>
+
+    <br><br><br>
+
+    <!--  GRAFICAS Y FILTROS  -->
+    <div id="div-grafica">
+        <div style="display:flex; flex-direction: column; margin-left: 6%;">
+            <h1 style="margin-right: 6%;">Gráficas</h1>
+            <fieldset style="width: 85vw;">
+                <legend>Seleccione un filtro:</legend>
+                <div>
+                    <input type="radio" onchange="getFiltro(this)" id="hoy" name="filtro" value="hoy"
+                           checked>
+                    <label for="hoy">Hoy</label>
+                </div>
+                <div>
+                    <input type="radio" onchange="getFiltro(this)" id="dia" name="filtro" value="dia">
+                    <label for="dia">Día</label>
+                </div>
+                <div>
+                    <input type="radio" onchange="getFiltro(this)" id="rangoFechas" name="filtro" value="rangoFechas">
+                    <label for="rangoFechas">Rango de fechas</label>
+                </div>
+            </fieldset>
+            <div id="horasFecha" class="horasFecha" style="margin-top: 2%; display: none;">
+                <label for="fecha">Seleccione una fecha:</label>
+                <input type="date" id="fecha" name="horaFecha" value="fecha">
+                <input type="button" value="Aceptar" onclick="graficarDia()">
+
+            </div>
+            <div id="rangoDeFechas" class="rangoDeFechas" style="margin-top: 2%; display: none;">
+                <label for="fechaI">Seleccione fecha inicio:</label>
+                <input type="date" id="fechaI" name="fechaI" value="fechaI">
+                <br>
+                <label for="fechaF">Seleccione fecha fin:</label>
+                <input type="date" id="fechaF" name="fechaF" value="fechaF">
+                <br>
+                <input type="button" value="Aceptar" onclick="graficarRango()">
+            </div>
+        </div>
+
+        <div style="display: flex; height: 25px;"></div>
+
+        <div style="display: flex; direction: ltr; margin-left: 6%;">
+            <div style="display: flex; width: 85vw;">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <br>
+</body>
+<footer style="height: 2%; text-align: center; border: solid;">FOOTER</footer>
+</html>
